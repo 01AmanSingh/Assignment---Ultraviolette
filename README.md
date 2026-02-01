@@ -2,14 +2,13 @@
 
 1. Assumptions about the signals
 
-I consider each row in the dataset to be a snapshot of a single vehicle at a specific point in time.
-Speed is interpreted in kilometers per hour, temperatures in degrees Celsius, battery voltage in volts, battery current in amperes, and state of charge as a percentage between 0 and 100.
+I consider each row in the dataset to represent a snapshot of a single vehicle at a specific point in time. Vehicle speed is interpreted in kilometers per hour, temperatures in degrees Celsius, battery voltage in volts, battery current in amperes, and state of charge as a percentage between 0 and 100.
 
-In real production environments, telematics data is rarely perfect. Sensors can occasionally produce noisy or incorrect values, and brief data dropouts are common. Because of this, I designed the pipeline so that one faulty sensor reading does not automatically invalidate an entire row if the remaining fields are usable.
+In real production environments, telematics data is rarely perfect. Sensors may occasionally produce noisy, missing, or incorrect values, and brief communication dropouts are common. Therefore, I designed the pipeline so that one faulty sensor reading does not automatically invalidate an entire row if the remaining fields are still usable. Instead, invalid sensor values are converted to null and documented through salvage notes.
 
-Trips are treated as logical driving sessions identified by trip_id, and each trip can contain many timestamped records.
+Trips are treated as logical driving sessions identified by trip_id, and each trip may contain many timestamped records. I assume that if consecutive records within a trip are separated by more than five minutes (300 seconds), this most likely indicates a communication gap or missing data rather than a normal driving pause. This assumption is used for gap detection during time-series processing.
 
-I also assume that when consecutive records are separated by more than five minutes (300 seconds), it most likely represents a communication gap or missing data rather than a normal driving pause.
+When I inspected the input during ingestion, the pipeline detected that the dataset already contained trip-level aggregated features such as duration, average speed, and distance. Hence, the system automatically switched to the trip-level processing path and skipped raw time-series validation. The trip metrics were standardized and exported directly. Because no per-timestamp sensor readings were present in the provided dataset, zero valid time-series rows were generated.
 
 
 
