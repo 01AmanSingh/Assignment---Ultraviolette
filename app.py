@@ -125,7 +125,20 @@ app.layout = html.Div(
     children=[
         dcc.Location(id="url"),
 
-        html.H1("🚗 Vehicle Telematics Dashboard"),
+       
+       html.H1(
+    "🚗 Vehicle Telematics Dashboard",
+    style={
+        "textAlign": "center",
+        "marginTop": "0px",
+        "marginBottom": "20px",
+        "fontSize": "38px",
+        "fontWeight": "800",
+        "background": "linear-gradient(90deg, #ff6a00, #ee0979, #6a11cb)",
+        "WebkitBackgroundClip": "text",
+        "WebkitTextFillColor": "transparent",
+    },
+),
 
         html.Div(
             style={"display": "flex", "gap": "24px", "marginBottom": "12px"},
@@ -369,3 +382,4 @@ def update_comparison(_):
 # ---------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
