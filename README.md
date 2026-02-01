@@ -1,5 +1,31 @@
 # Assignment---Ultraviolette
 
+#Assignment Structure - 
+
+├── processing.py
+├── app.py
+├── vehicle_telematics.csv
+├── output/
+│   ├── cleaned_telematics.csv
+│   ├── rejected_telematics.csv
+│   └── trip_metrics.csv
+
+#How to run - 
+
+1. Copy your telematics CSV file into the project root and name it exactly
+   -vehicle_telematics.csv
+2. Install required packages
+3. Run the data processing script
+   -python processing.py
+4. Run the dashboard application
+   -python app.py
+5. Open the dashboard in your browser with localhost
+
+A short demo video of the execution is also provided in the Project Report for reference.
+
+
+#Engineering Reasoning -
+
 1. Assumptions about the signals
 
 I consider each row in the dataset to represent a snapshot of a single vehicle at a specific point in time. Vehicle speed is interpreted in kilometers per hour, temperatures in degrees Celsius, battery voltage in volts, battery current in amperes, and state of charge as a percentage between 0 and 100.
@@ -102,6 +128,17 @@ Trip duration is obtained by summing time deltas
 Distance is estimated using speed multiplied by elapsed time
 
 Because these computations depend on timestamp ordering, they demonstrate true time-series-aware processing.
+
+
+6. Behavior at 10× scale 
+The overall logic remains correct at higher data volumes, but performance becomes the main challenge. 
+At roughly ten times the data size: 
+• Keeping all validated rows in memory before concatenation may exceed available RAM 
+• Group by operations become slower 
+• Writing very large CSV files becomes I/O intensive 
+The primary bottleneck is storing large intermediate Data Frames in memory. 
+At the production scale, this would be addressed using streaming writes, incremental 
+aggregation, or a distributed processing engine. 
 
 
 
